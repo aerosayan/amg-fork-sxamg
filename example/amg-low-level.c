@@ -43,6 +43,7 @@ int main(void)
     sx_amg_pars_init(&pars);
     pars.maxit = 1000;
     pars.verb = 2;
+    pars.trunc_threshold = 1e-3;
     
     /* print info */
     sx_printf("\nA: m = %"dFMT", n = %"dFMT", nnz = %"dFMT"\n", A.num_rows,

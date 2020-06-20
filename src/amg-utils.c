@@ -132,12 +132,12 @@ void sx_amg_pars_init(SX_AMG_PARS *pars)
     pars->relax = 1.0;
     pars->poly_deg = 3;
 
-    pars->cs_type = SX_COARSE_RSP;
+    pars->cs_type = SX_COARSE_RS;
 
     pars->interp_type = SX_INTERP_STD;
     pars->max_row_sum = 0.9;
     pars->strong_threshold = 0.3;
-    pars->trunc_threshold = 0.2;
+    pars->trunc_threshold = 1e-3;
 }
 
 /**
