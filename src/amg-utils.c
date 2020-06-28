@@ -137,7 +137,7 @@ void sx_amg_pars_init(SX_AMG_PARS *pars)
     pars->interp_type = SX_INTERP_STD;
     pars->max_row_sum = 0.9;
     pars->strong_threshold = 0.3;
-    pars->trunc_threshold = 1e-3;
+    pars->trunc_threshold = 0.1;
 }
 
 /**
