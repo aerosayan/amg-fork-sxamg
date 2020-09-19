@@ -16,7 +16,7 @@ int main(void)
     assert(ncy > 0);
     assert(ncz > 0);
 
-    /* create distributed matrix */
+    /* create a matrix */
     if (prob == 1) {
         nglobal = ncx;
         A = laplacian_3pt(ncx);

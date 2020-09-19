@@ -13,7 +13,7 @@ int main(void)
     SX_INT ncx = 23, ncy = 13, ncz = 14;
     SX_INT nglobal = 0;
     
-    /* create distributed matrix */
+    /* create a matrix */
     if (prob == 1) {
         nglobal = ncx;
         A = laplacian_3pt(ncx);
