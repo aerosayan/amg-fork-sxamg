@@ -48,120 +48,120 @@ double func_b(double x, double y, double z)
 
 void id_to_ijk(SX_INT *i, SX_INT *j, SX_INT *k, SX_INT id, SX_INT N)
 {
-	/* K */
-	*k = id / ((N + 1) * (N + 1));
+    /* K */
+    *k = id / ((N + 1) * (N + 1));
 
-	/* J */
-	id -= *k * (N + 1) * (N + 1);
-	*j = id / (N + 1);
+    /* J */
+    id -= *k * (N + 1) * (N + 1);
+    *j = id / (N + 1);
 
-	/* I */
-	*i = id - *j * (N + 1);
+    /* I */
+    *i = id - *j * (N + 1);
 }
 
 SX_INT ijk_to_id(SX_INT i, SX_INT j, SX_INT k, SX_INT N)
 {
-	return k * (N + 1) * (N + 1) + j * (N + 1) + i;
+    return k * (N + 1) * (N + 1) + j * (N + 1) + i;
 }
 
 void assemble_linear_system(SX_MAT *A, SX_VEC *b, SX_INT size, SX_INT N, double h)
 {
-	SX_INT i;
-	SX_INT si, sj, sk;
-	SX_FLT *vd;
-	SX_INT *Ap, *Aj;
-	SX_FLT *Ax;
-	SX_INT p;
+    SX_INT i;
+    SX_INT si, sj, sk;
+    SX_FLT *vd;
+    SX_INT *Ap, *Aj;
+    SX_FLT *Ax;
+    SX_INT p;
 
-	assert(A != NULL);
-	assert(b != NULL);
-	assert(N > 1);
-	assert(size == (N + 1) * (N + 1) * (N + 1));
-	assert(h > 0);
+    assert(A != NULL);
+    assert(b != NULL);
+    assert(N > 1);
+    assert(size == (N + 1) * (N + 1) * (N + 1));
+    assert(h > 0);
 
-	/* vector */
-	vd = b->d;
+    /* vector */
+    vd = b->d;
 
-	/* matrix: each row has 7 entries at most */
-	Ap = sx_malloc((size + 1) * sizeof(*Ap));
-	Aj = sx_malloc(size * 7 * sizeof(*Ap));
-	Ax = sx_malloc(size * 7 * sizeof(*Ax));
+    /* matrix: each row has 7 entries at most */
+    Ap = sx_malloc((size + 1) * sizeof(*Ap));
+    Aj = sx_malloc(size * 7 * sizeof(*Ap));
+    Ax = sx_malloc(size * 7 * sizeof(*Ax));
 
-	A->num_rows = A->num_cols = size;
-	A->Ap = Ap;
-	A->Aj = Aj;
-	A->Ax = Ax;
+    A->num_rows = A->num_cols = size;
+    A->Ap = Ap;
+    A->Aj = Aj;
+    A->Ax = Ax;
 
-	Ap[0] = p = 0;
-	for (i = 0; i < size; i++) {
-		id_to_ijk(&si, &sj, &sk, i, N);
+    Ap[0] = p = 0;
+    for (i = 0; i < size; i++) {
+        id_to_ijk(&si, &sj, &sk, i, N);
 
-		/* boundary nodes */
-		if (si == 0 || si == N || sj == 0 || sj == N || sk == 0 || sk == N) {
-			/* rhs: b */
-			vd[i] = func_b(si * h, sj * h, sk * h);
+        /* boundary nodes */
+        if (si == 0 || si == N || sj == 0 || sj == N || sk == 0 || sk == N) {
+            /* rhs: b */
+            vd[i] = func_b(si * h, sj * h, sk * h);
 
-			/* matrix */
-			Aj[p] = i;
-			Ax[p] = 1;
+            /* matrix */
+            Aj[p] = i;
+            Ax[p] = 1;
 
-			p++;
-		}
-		else { /* interior nodes */
-			/* rhs: b */
-			vd[i] = h * h * func_g(si * h, sj * h, sk * h);
+            p++;
+        }
+        else { /* interior nodes */
+            /* rhs: b */
+            vd[i] = h * h * func_g(si * h, sj * h, sk * h);
 
-			/* 7 entries */
-			Aj[p] = ijk_to_id(si, sj, sk - 1, N);
-			Ax[p] = -1;
-			p++;
+            /* 7 entries */
+            Aj[p] = ijk_to_id(si, sj, sk - 1, N);
+            Ax[p] = -1;
+            p++;
 
-			Aj[p] = ijk_to_id(si, sj - 1, sk, N);
-			Ax[p] = -1;
-			p++;
+            Aj[p] = ijk_to_id(si, sj - 1, sk, N);
+            Ax[p] = -1;
+            p++;
 
-			Aj[p] = ijk_to_id(si - 1, sj, sk, N);
-			Ax[p] = -1;
-			p++;
+            Aj[p] = ijk_to_id(si - 1, sj, sk, N);
+            Ax[p] = -1;
+            p++;
 
-			/* diagonal */
-			Aj[p] = ijk_to_id(si, sj, sk, N);
-			Ax[p] = 6;
-			p++;
+            /* diagonal */
+            Aj[p] = ijk_to_id(si, sj, sk, N);
+            Ax[p] = 6;
+            p++;
 
-			Aj[p] = ijk_to_id(si + 1, sj, sk, N);
-			Ax[p] = -1;
-			p++;
+            Aj[p] = ijk_to_id(si + 1, sj, sk, N);
+            Ax[p] = -1;
+            p++;
 
-			Aj[p] = ijk_to_id(si, sj + 1, sk, N);
-			Ax[p] = -1;
-			p++;
+            Aj[p] = ijk_to_id(si, sj + 1, sk, N);
+            Ax[p] = -1;
+            p++;
 
-			Aj[p] = ijk_to_id(si, sj, sk + 1, N);
-			Ax[p] = -1;
-			p++;
-		}
+            Aj[p] = ijk_to_id(si, sj, sk + 1, N);
+            Ax[p] = -1;
+            p++;
+        }
 
-		Ap[i + 1] = p;
-	}
+        Ap[i + 1] = p;
+    }
 
-	/* nnz */
-	A->num_nnzs = p;
+    /* nnz */
+    A->num_nnzs = p;
 }
 
 void set_real_solution(SX_VEC *u, SX_INT size, SX_INT N, double h)
 {
-	SX_INT i;
-	SX_INT si, sj, sk;
-	SX_FLT *vd;
+    SX_INT i;
+    SX_INT si, sj, sk;
+    SX_FLT *vd;
 
-	assert(u != NULL);
-	assert(N > 1);
-	assert(size == (N + 1) * (N + 1) * (N + 1));
-	assert(h > 0);
+    assert(u != NULL);
+    assert(N > 1);
+    assert(size == (N + 1) * (N + 1) * (N + 1));
+    assert(h > 0);
 
-	/* vector */
-	vd = u->d;
+    /* vector */
+    vd = u->d;
 
     for (i = 0; i < size; i++) {
         id_to_ijk(&si, &sj, &sk, i, N);
@@ -171,14 +171,14 @@ void set_real_solution(SX_VEC *u, SX_INT size, SX_INT N, double h)
 
 double compute_error(SX_VEC *u, SX_VEC *ux)
 {
-	SX_INT i, size = u->n;
-	SX_FLT *vd, *vx;
+    SX_INT i, size = u->n;
+    SX_FLT *vd, *vx;
     double t = 0.;
     double nrm = 0.;
 
-	/* vector */
-	vd = u->d;
-	vx = ux->d;
+    /* vector */
+    vd = u->d;
+    vx = ux->d;
 
     for (i = 0; i < size; i++) {
         nrm += vd[i] * vd[i];
@@ -201,26 +201,26 @@ int main(int argc, char **argv)
     SX_AMG_PARS pars;
 
     if (argc > 1) {
-		N = atoi(argv[1]);
+        N = atoi(argv[1]);
 
-		if (N <= 1) {
-			printf("N is too small\n");
-			exit(0);
-		}
-	}
+        if (N <= 1) {
+            printf("N is too small\n");
+            exit(0);
+        }
+    }
 
-	assert(N > 1);
-	size = (N + 1) * (N + 1) * (N + 1);
+    assert(N > 1);
+    size = (N + 1) * (N + 1) * (N + 1);
 
-	/* rhs */
+    /* rhs */
     b = sx_vec_create(size);
 
-	/* h */
-	h = 1. / N;
+    /* h */
+    h = 1. / N;
 
-	/* assemble */
+    /* assemble */
     tm = sx_get_time();
-	assemble_linear_system(&A, &b, size, N, h);
+    assemble_linear_system(&A, &b, size, N, h);
     tm = sx_get_time() - tm;
 
     sx_printf("\nlinear system dimension: %"dFMT"\n", size);
@@ -229,7 +229,7 @@ int main(int argc, char **argv)
     /* solve the system */
     x = sx_vec_create(size);
     sx_vec_set_value(&x, 0.0);
-    
+
     /* pars */
     sx_amg_pars_init(&pars);
     pars.maxit = 1000;
@@ -241,12 +241,12 @@ int main(int argc, char **argv)
     sx_amg_pars_print(&pars);
 
     rtn = sx_solver_amg(&A, &x, &b, &pars);
-    
+
     sx_printf("AMG residual: %"fFMTg"\n", rtn.ares);
     sx_printf("AMG relative residual: %"fFMTg"\n", rtn.rres);
     sx_printf("AMG iterations: %"dFMT"\n", rtn.nits);
 
-	/* real solution */
+    /* real solution */
     u = sx_vec_create(size);
     set_real_solution(&u, size, N, h);
     sx_printf("\nrelative error: %g\n", compute_error(&u, &x));
@@ -256,5 +256,5 @@ int main(int argc, char **argv)
     sx_vec_destroy(&b);
     sx_vec_destroy(&u);
 
-	return 0;
+    return 0;
 }
