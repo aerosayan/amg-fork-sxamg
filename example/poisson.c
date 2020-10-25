@@ -226,7 +226,7 @@ int main(int argc, char **argv)
     sx_printf("\nlinear system dimension: %"dFMT"\n", size);
     sx_printf("linear system assembling time: %g s\n", tm);
 
-    /* solve the system */
+    /* initial guess */
     x = sx_vec_create(size);
     sx_vec_set_value(&x, 0.0);
 
@@ -240,6 +240,7 @@ int main(int argc, char **argv)
 
     sx_amg_pars_print(&pars);
 
+    /* solve the system */
     rtn = sx_solver_amg(&A, &x, &b, &pars);
 
     sx_printf("AMG residual: %"fFMTg"\n", rtn.ares);
