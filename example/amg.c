@@ -42,7 +42,7 @@ int main(void)
     sx_amg_pars_init(&pars);
     pars.maxit = 1000;
     pars.verb = 3;
-    
+
     /* print info */
     sx_printf("A: m = %"dFMT", n = %"dFMT", nnz = %"dFMT"\n", A.num_rows,
             A.num_cols, A.num_nnzs);
@@ -64,6 +64,6 @@ int main(void)
     sx_mat_destroy(&A);
     sx_vec_destroy(&x);
     sx_vec_destroy(&b);
-    
+
     return 0;
 }
