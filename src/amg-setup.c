@@ -15,9 +15,14 @@ void sx_amg_setup(SX_AMG *mg, SX_MAT *A, SX_AMG_PARS *pars)
     SX_IMAT Scouple;
     SX_INT size;
     SX_IVEC vertices;
+    SX_FLT ratio;
 
     assert(pars != NULL);
+
     assert(pars->max_levels > 0);
+
+    assert(pars->coarse_density > 0);
+    ratio = pars->coarse_density;
 
     assert(A->num_rows == A->num_cols);
     assert(A->num_rows > 0);
@@ -105,7 +110,7 @@ void sx_amg_setup(SX_AMG *mg, SX_MAT *A, SX_AMG_PARS *pars)
         sx_free(Scouple.Aj);
 
         // Check 4: Is the coarse matrix too dense?
-        if (mg->cg[lvl].A.num_nnzs / mg->cg[lvl].A.num_rows > mg->cg[lvl].A.num_cols * 0.2) {
+        if (mg->cg[lvl].A.num_nnzs * 1. / mg->cg[lvl].A.num_rows > mg->cg[lvl].A.num_cols * ratio) {
             if (verb > 1) {
                 sx_printf("### WARNING: Coarse matrix is too dense!\n");
                 sx_printf("### WARNING: m = n = %"dFMT", nnz = %"dFMT"!\n", mg->cg[lvl].A.num_cols,

@@ -234,9 +234,11 @@ int main(int argc, char **argv)
     sx_amg_pars_init(&pars);
     pars.maxit = 1000;
     pars.verb = 3;
-    pars.max_levels = 10;
+    pars.max_levels = 20;
     pars.interp_type = SX_INTERP_DIR;
     pars.tol = 1e-9;
+    pars.strong_threshold = 0.25;
+    pars.coarse_density = 0.5;
 
     sx_amg_pars_print(&pars);
 
@@ -250,7 +252,7 @@ int main(int argc, char **argv)
     /* real solution */
     u = sx_vec_create(size);
     set_real_solution(&u, size, N, h);
-    sx_printf("\nrelative error: %g\n", compute_error(&u, &x));
+    sx_printf("\nrelative error: %g\n\n", compute_error(&u, &x));
 
     sx_mat_destroy(&A);
     sx_vec_destroy(&x);

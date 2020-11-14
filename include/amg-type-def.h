@@ -158,7 +158,6 @@ typedef struct SX_AMG_PARS_
 
     SX_COARSEN_TYPE cs_type;     /** coarsening type */
     SX_INT max_levels;           /** max number of levels of AMG */
-    SX_INT coarse_dof;           /** max number of coarsest level DOF */
 
     SX_SM_TYPE smoother;         /** smoother type */
     SX_FLT relax;                /** relax parseter for SOR smoother */
@@ -168,9 +167,12 @@ typedef struct SX_AMG_PARS_
     SX_INT poly_deg;             /** degree of the polynomial smoother */
 
     SX_INTERP_TYPE interp_type;  /** interpolation type */
-    SX_FLT strong_threshold;     /** strong connection threshold for coarsening */
     SX_FLT max_row_sum;          /** maximal row sum parseter */
     SX_FLT trunc_threshold;      /** truncation threshold */
+
+    SX_INT coarse_dof;           /** max number of coarsest level DOF */
+    SX_FLT coarse_density;       /** maximal non-zeros ratio*/
+    SX_FLT strong_threshold;     /** strong connection threshold for coarsening */
 
 } SX_AMG_PARS;
 

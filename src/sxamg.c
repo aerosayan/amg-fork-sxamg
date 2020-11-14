@@ -82,7 +82,7 @@ SX_RTN sx_solver_amg_solve(SX_AMG *mg, SX_VEC *x, SX_VEC *b)
 
     if (verb > 0) {
         solve_end = sx_get_time();
-        sx_printf("AMG solve time: %"fFMTg" s\n", solve_end - solve_start);
+        sx_printf("\nAMG solve time: %"fFMTg" s\n", solve_end - solve_start);
     }
 
     return rtn;

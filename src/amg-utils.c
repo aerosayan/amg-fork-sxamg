@@ -121,7 +121,6 @@ void sx_amg_pars_init(SX_AMG_PARS *pars)
     pars->ctol = 1e-7;
 
     pars->max_levels = 30;
-    pars->coarse_dof = MIN_CDOF;
 
     /* default v cycle */
     pars->cycle_itr = 1;
@@ -136,8 +135,11 @@ void sx_amg_pars_init(SX_AMG_PARS *pars)
 
     pars->interp_type = SX_INTERP_STD;
     pars->max_row_sum = 0.9;
-    pars->strong_threshold = 0.3;
     pars->trunc_threshold = 0.1;
+
+    pars->strong_threshold = 0.3;
+    pars->coarse_dof = MIN_CDOF;
+    pars->coarse_density = 0.3;
 }
 
 /**
@@ -185,6 +187,7 @@ void sx_amg_pars_print(SX_AMG_PARS *pars)
     sx_printf("AMG coarsening type:               %"dFMT"\n", pars->cs_type);
     sx_printf("AMG interpolation type:            %"dFMT"\n", pars->interp_type);
     sx_printf("AMG dof on coarsest grid:          %"dFMT"\n", pars->coarse_dof);
+    sx_printf("AMG dof maximal non-zero ratio:    %"fFMTf"\n", pars->coarse_density);
     sx_printf("AMG strong threshold:              %.4"fFMTf"\n", pars->strong_threshold);
     sx_printf("AMG truncation threshold:          %.4"fFMTf"\n", pars->trunc_threshold);
     sx_printf("AMG max row sum:                   %.4"fFMTf"\n", pars->max_row_sum);
